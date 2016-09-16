@@ -51,13 +51,15 @@ int main(int argc, char **argv)
 	
 	while (emptyQueue(todo) == FALSE && nVertices(visitedGraph) < maxURLs){
 	    char *toVisit = leaveQueue(todo);
+	    printf("toVisit is %s\n", toVisit);
 
 	    if (strstr(toVisit, "unsw.edu.au") == NULL) continue; //check if unsw site	    
-	    
+
 	    if (!(handle = url_fopen(toVisit, "r"))) {
 		    fprintf(stderr,"Couldn't open %s\n", next);
 		    exit(1);
 	    }
+	    
 	    while(!url_feof(handle)) {
 		    url_fgets(buffer,sizeof(buffer),handle);
 		    //fputs(buffer,stdout);
@@ -65,19 +67,22 @@ int main(int argc, char **argv)
 		    char result[BUFSIZE];
 		    memset(result,0,BUFSIZE);
 		    while ((pos = GetNextURL(buffer, toVisit, result, pos)) > 0) {
-			    printf("Found: '%s'\n",result);
+			    printf("Result: '%s'\n",result);
 			    
-			    if (nVertices(visitedGraph) < maxURLs || (isElem(seenSet, toVisit) && (isElem(seenSet, result)))){
-			        if (addEdge(visitedGraph, toVisit, result) == FALSE) continue;
+			    if (nVertices(visitedGraph) < maxURLs || isConnected(visitedGraph, toVisit, result) == FALSE){
+			        if (addEdge(visitedGraph, toVisit, result) == FALSE){
+			            printf("exit\n");
+			            continue;
+			        }
 			        //printf("to visit: %s\n, result %s\n\n", toVisit, result);
 			    }
 			    if (isElem(seenSet, result) == FALSE){
 			        insertInto(seenSet, result);
 			        enterQueue(todo, result);
-			        //showQueue(todo);
+			        showQueue(todo);
 			    } 
 			    strcpy(toVisit, result);
-			    //printf("toVisit is %s\n", toVisit);
+			    printf("toVisit is %s\n\n", toVisit);
 			    memset(result,0,BUFSIZE);
 		    }
 	    }
