@@ -48,7 +48,7 @@ Round giveMeTheRound(HunterView currentView)
 PlayerID whoAmI(HunterView currentView)
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    int id = getCurrentPlayer(currentView -> g);
+    PlayerID id = getCurrentPlayer(currentView -> g);
     return id;
 }
 
@@ -84,6 +84,9 @@ void giveMeTheTrail(HunterView currentView, PlayerID player,
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
     getHistory(currentView->g,player,trail);
+    //maybe put in checks that if the hunter is asking for 
+    //dracula's trail then it only gives the basic info
+    //not revealing all of his locations
 }
 
 //// Functions that query the map to find information about connectivity
@@ -93,8 +96,14 @@ LocationID *whereCanIgo(HunterView currentView, int *numLocations,
                         int road, int rail, int sea)
 {
     //REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-    PlayerID I = whoAmI(currentView);
-    int *w = whereCanTheyGo(currentView,numLocations,I,road,FALSE,sea);
+    PlayerID id = whoAmI(currentView);
+    LocationID *w=whereCanTheyGo(currentView,numLocations,id,road,FALSE,sea);
+    //the way this function works is that road, rail, sea ints 
+    //are a combination of TRUEs and FALSEs and this function accomadates for all
+    //sample code could be
+    //if(road==TRUE && rail==TRUE && sea==TRUE){
+    //   w=whereCanTheyGo(currentView,numLocations,id,TRUE,TRUE,TRUE);
+    //}
     return w;
 }
 
